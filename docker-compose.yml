@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=pqu4r2200
+      - DB_NAME=mi_base_datos
+    depends_on:
+      - db
+    networks:
+      - flonzo-network
+
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - '80:80'
+    networks:
+      - flonzo-network
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: pqu4r2200
+      MYSQL_DATABASE: mi_base_datos
+    ports:
+      - '3306:3306'
+    networks:
+      - flonzo-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - '8080:80'
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: pqu4r2200
+    networks:
+      - flonzo-network
+
+networks:
+  flonzo-network:
