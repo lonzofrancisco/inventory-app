@@ -3,3 +3,4 @@ docker-compose.override.yml
 *.log
 *.lock
 tmp/
+db.sql

@@ -11,7 +11,7 @@ services:
       - DB_HOST=db
       - DB_USER=root
       - DB_PASSWORD=pqu4r2200
-      - DB_NAME=mi_base_datos
+      - DB_NAME=inventoryApp
     depends_on:
       - db
     networks:
@@ -31,7 +31,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: pqu4r2200
-      MYSQL_DATABASE: mi_base_datos
+      MYSQL_DATABASE: inventoryApp
     ports:
       - '3306:3306'
     networks:
