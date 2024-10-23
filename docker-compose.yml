@@ -6,6 +6,8 @@ services:
       context: ./backend
     ports:
       - '3000:3000'
+    volumes:
+      - ./backend:/usr/src/app  # Monta la carpeta local en el contenedor
     environment:
       - NODE_ENV=production
       - DB_HOST=db
@@ -16,6 +18,7 @@ services:
       - db
     networks:
       - flonzo-network
+    command: ["nodemon", "server.js"]
 
 
   frontend:
@@ -34,6 +37,8 @@ services:
       MYSQL_DATABASE: inventoryApp
     ports:
       - '3306:3306'
+    volumes: 
+      - db_data:/var/lib/mysql
     networks:
       - flonzo-network
 
@@ -49,5 +54,8 @@ services:
     networks:
       - flonzo-network
 
+
+volumes:
+  db_data:  
 networks:
   flonzo-network:

@@ -3,6 +3,15 @@ const mysql = require('mysql2');
 const app = express();
 const port = 3000;
 
+function checkApiAlive(callback) {
+    db.query('SELECT 1 + 2 AS result', (err, results) => {
+        if (err) {
+            return callback(err, null);
+        }
+        const sumResult = results[0].result;
+        callback(null, sumResult);
+    });
+}
 // Middleware para parsear el cuerpo de las peticiones como JSON
 app.use(express.json());
 
@@ -23,6 +32,13 @@ function connectWithRetry() {
             setTimeout(connectWithRetry, 60000*5); // Reintentar después de 5 min
         } else {
             console.log('Conectado a la base de datos MySQL');
+            checkApiAlive((err, sumResult) => {
+                if (err) {
+                    return res.status(500).send({ error: 'Error en la consulta', details: err });
+                }
+                console.log({ message: 'API is alive', sum: sumResult });
+            });
+            
         }
     });
 }
@@ -30,78 +46,18 @@ function connectWithRetry() {
 connectWithRetry();
 
 
-// Rutas para el CRUD
 
-// Crear un producto
-app.post('/productos', (req, res) => {
-    const { nombre, precio, descripcion } = req.body;
-    const sql = 'INSERT INTO productos (nombre, precio, descripcion) VALUES (?, ?, ?)';
-    db.query(sql, [nombre, precio, descripcion], (err, result) => {
+// Ruta para verificar si la API está viva
+app.get('/alive', (req, res) => {
+    console.log('apialive');
+    checkApiAlive((err, sumResult) => {
         if (err) {
-            return res.status(500).json({ error: err.message });
+            return res.status(500).send({ error: 'Error en l a consulta', details: err });
         }
-        res.status(201).json({ id: result.insertId, nombre, precio, descripcion });
+        res.json({ message: 'API is alive', sum: sumResult });
     });
 });
 
-// Leer todos los productos
-app.get('/productos', (req, res) => {
-    const sql = 'SELECT * FROM productos';
-    db.query(sql, (err, results) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json(results);
-    });
-});
-
-// Leer un producto por ID
-app.get('/productos/:id', (req, res) => {
-    const { id } = req.params;
-    const sql = 'SELECT * FROM productos WHERE id = ?';
-    db.query(sql, [id], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        if (result.length === 0) {
-            return res.status(404).json({ message: 'Producto no encontrado' });
-        }
-        res.json(result[0]);
-    });
-});
-
-// Actualizar un producto
-app.put('/productos/:id', (req, res) => {
-    const { id } = req.params;
-    const { nombre, precio, descripcion } = req.body;
-    const sql = 'UPDATE productos SET nombre = ?, precio = ?, descripcion = ? WHERE id = ?';
-    db.query(sql, [nombre, precio, descripcion, id], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Producto no encontrado' });
-        }
-        res.json({ id, nombre, precio, descripcion });
-    });
-});
-
-// Eliminar un producto
-app.delete('/productos/:id', (req, res) => {
-    const { id } = req.params;
-    const sql = 'DELETE FROM productos WHERE id = ?';
-    db.query(sql, [id], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Producto no encontrado' });
-        }
-        res.status(204).send();
-    });
-});
-
-// Iniciar el servidor
 app.listen(port, () => {
     console.log(`Servidor escuchando en http://localhost:${port}`);
 });
