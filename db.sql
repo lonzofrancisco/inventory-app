@@ -1,4 +1,7 @@
 CREATE DATABASE inventoryApp;
+
+--inventory tables 
+
 CREATE TABLE items (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
@@ -11,7 +14,7 @@ CREATE TABLE items (
     extra_field_2 VARCHAR(255) DEFAULT NULL,  -- Campo 2 para futuras extensiones
     extra_field_3 VARCHAR(255) DEFAULT NULL,  -- Campo 3 para futuras extensiones
     extra_field_4 VARCHAR(255) DEFAULT NULL,  -- Campo 4 para futuras extensiones
-    extra_field_5 VARCHAR(255) DEFAULT NULL  -- Campo 5 para futuras extensiones
+    extra_field_5 VARCHAR(255) DEFAULT NULL   -- Campo 5 para futuras extensiones
 );
 
 CREATE TABLE storage_locations (
@@ -33,6 +36,7 @@ CREATE TABLE inventory (
     location_id INT NOT NULL,
     quantity INT NOT NULL,
     last_checked TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    in_work_quantity INT NOT NULL,            -- Cantidad reservada para pickings
     extra_field_1 VARCHAR(255) DEFAULT NULL,  -- Campo 1 para futuras extensiones
     extra_field_2 VARCHAR(255) DEFAULT NULL,  -- Campo 2 para futuras extensiones
     extra_field_3 VARCHAR(255) DEFAULT NULL,  -- Campo 3 para futuras extensiones
@@ -42,6 +46,11 @@ CREATE TABLE inventory (
     FOREIGN KEY (location_id) REFERENCES storage_locations(id) ON DELETE CASCADE
 );
 
+
+--shipment_tables
+
+
+--auxiliar tables
 
 CREATE TABLE ean_codes (
     id INT PRIMARY KEY AUTO_INCREMENT,

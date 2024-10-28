@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 3000
 
 # Comando para iniciar la aplicación
-CMD ["npm", "run", "dev"]  # Asegúrate de que esta línea esté aquí
+CMD ["nodemon", "server.js"]

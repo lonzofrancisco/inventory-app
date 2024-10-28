@@ -6,10 +6,11 @@ services:
       context: ./backend
     ports:
       - '3000:3000'
+    entrypoint: ["npx", "nodemon", "/usr/src/app/server.js"]
     volumes:
       - ./backend:/usr/src/app  # Monta la carpeta local en el contenedor
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - DB_HOST=db
       - DB_USER=root
       - DB_PASSWORD=pqu4r2200
@@ -18,7 +19,7 @@ services:
       - db
     networks:
       - flonzo-network
-    command: ["nodemon", "server.js"]
+    command: ["nodemon", "--verbose", "server.js"]
 
 
   frontend:
